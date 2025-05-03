@@ -176,7 +176,7 @@ class MotionLib():
             lbp0 = self.lbp[f0l]
             lbp1 = self.lbp[f1l]
             lbp = (1.0 - blend_exp) * lbp0 + blend_exp * lbp1
-            return root_pos, root_rot, dof_pos[:, :21], root_vel, root_ang_vel, dof_vel[:, :21], keypoint_trans, keypoint_trans
+            return root_pos, root_rot, dof_pos[:, :21], root_vel, root_ang_vel, dof_vel[:, :21], keypoint_trans, lbp
 
         return root_pos, root_rot, dof_pos[:, :21], root_vel, root_ang_vel, dof_vel[:, :21], keypoint_trans
 
@@ -207,8 +207,7 @@ class MotionLib():
         return self.motion_fps[motion_ids]
     
     def get_motion_files(self, motion_ids):
-        motion_ids = motion_ids.to(self.motion_files.device)
-        return self.motion_files[motion_ids]
+        return [self.motion_files[i] for i in motion_ids.tolist()]
     
     def get_motion_difficulty(self, motion_ids):
         motions_difficulty_tensor = torch.tensor(self.motions_difficulty, device=self.device)
@@ -264,8 +263,6 @@ class MotionLib():
             self.motion_num_frames.append(motion_data['num_frames'])
             
             # print(motion_data.keys())
-            
-            # Convert numpy arrays to torch tensors
             motion_data['root_pos'] = torch.from_numpy(motion_data['root_pos']).to(self.device).to(torch.float32)
             motion_data['root_rot'] = torch.from_numpy(motion_data['root_rot']).to(self.device).to(torch.float32)
             motion_data['dof_pos'] = torch.from_numpy(motion_data['dof_pos']).to(self.device).to(torch.float32)
@@ -273,7 +270,7 @@ class MotionLib():
             motion_data['root_ang_vel'] = torch.from_numpy(motion_data['root_ang_vel']).to(self.device).to(torch.float32)
             motion_data['dof_vel'] = torch.from_numpy(motion_data['dof_vel']).to(self.device).to(torch.float32)
             motion_data['keypoint_trans'] = torch.from_numpy(motion_data['keypoint_trans']).to(self.device).to(torch.float32)
-            motion_data['local_key_body_pos'] = torch.zeros((motion_data['num_frames'], len(self.key_body_ids), 3), dtype=torch.float32, device=self.device)
+            motion_data['local_key_body_pos'] = torch.from_numpy(np.load(os.path.splitext(motion_file)[0] + "_key_bodies.npy")).to(self.device)
             
             self.motions.append(motion_data)
             
@@ -298,7 +295,6 @@ class MotionLib():
             #  'root_pos', 'root_rot', 'dof_pos',
             #  'root_vel', 'root_ang_vel', 'dof_vel',
             #  'keypoint_trans']
-            # NOTE: this time convert those arrays in the data to torch.tensor
             motion_data['root_pos'] = torch.from_numpy(motion_data['root_pos']).to(self.device).to(torch.float32)
             motion_data['root_rot'] = torch.from_numpy(motion_data['root_rot']).to(self.device).to(torch.float32)
             motion_data['dof_pos'] = torch.from_numpy(motion_data['dof_pos']).to(self.device).to(torch.float32)

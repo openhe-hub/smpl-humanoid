@@ -1,0 +1,28 @@
+motions:
+  # root: ../retarget_npy/amass/female_walking
+  # '02_01':
+  #   trim_beg: -1
+  #   trim_end: -1
+  #   weight: 1.0
+  #   description: walk to stand t2
+  #   difficulty: 4
+  'B1_-_stand_to_walk_stageii':
+    trim_beg: -1
+    trim_end: -1
+    weight: 1.0
+    description: stand to walk
+    difficulty: 4
+  'B2_-_walk_to_stand_stageii':
+    trim_beg: -1
+    trim_end: -1
+    weight: 1.0
+    description: walk to stand
+    difficulty: 4
+  'B2_-_walk_to_stand_t2_stageii':
+    trim_beg: -1
+    trim_end: -1
+    weight: 1.0
+    description: walk to stand t2
+    difficulty: 4
+    
+    
